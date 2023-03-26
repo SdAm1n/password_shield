@@ -9,6 +9,19 @@
 
 using namespace std;
 
+void clear_display()        // for detecting operating system
+{
+    #ifdef _WIN32           // for detecting windows 32 or 64 bit system
+        system("cls");
+    #elif __linux__         // for detecting linux
+        system("clear");
+    #elif __MACH__          // for detecting mac
+        system("clear");
+
+    #endif
+}
+
+
 // menu function shows menu for password manager
 
 void menu() {
@@ -22,18 +35,6 @@ void menu() {
     cout << "Enter Your Choice: "; 
 }
 
-
-void clear_display()        // for detecting operating system
-{
-    #ifdef _WIN32           // for detecting windows 32 or 64 bit system
-        system("cls");
-    #elif __linux__         // for detecting linux
-        system("clear");
-    #elif __MACH__          // for detecting mac
-        system("clear");
-
-    #endif
-}
 
 // store_password function stores password in password.txt file
 
@@ -104,6 +105,8 @@ void generate_password() {
     }
 }
 
+// find_password function finds password by username/email or website
+
 void find_password() {
 
     clear_display();
@@ -157,6 +160,8 @@ void find_password() {
     cout << endl;
 
 }
+
+// view_all_password functions prints all password from password.txt file
 
 void view_all_password() {
     clear_display();
