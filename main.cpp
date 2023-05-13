@@ -3,11 +3,27 @@
 */
 
 #include <iostream>
-#include <cstdlib>
+#include <vector>
+#include <string>
+#include <cstdlib>  // exit function prototypes
 #include <ctime>
-#include <fstream>
+#include <fstream>  // contains file stream processing types
 
 using namespace std;
+
+const string MASTER_PASSWORD = "1234";
+
+bool check_masterPass(){
+    cout << "Type your Master Password to Access the program: ";
+    string master_password;
+    cin>> master_password;
+
+    if(master_password == MASTER_PASSWORD) {
+        return true;
+    }
+    
+    return false;
+}
 
 void clear_display()        // for detecting operating system
 {
@@ -29,7 +45,9 @@ void menu() {
     cout << "1. Generate Password" << endl;
     cout << "2. Store Password" << endl;
     cout << "3. Find Password"<<endl;
-    cout << "4. View All Passwords" << endl;
+    cout << "4. Change Password" << endl;
+    cout << "5. Delete an Entry" << endl;
+    cout << "6. View All Passwords" << endl;
     cout << "q. Quit"<<endl;
     cout << endl;
     cout << "Enter Your Choice: "; 
@@ -43,6 +61,7 @@ void store_password(string &default_password) {
 
     ofstream pass_file("password.txt",ios::app);
 
+    
     if(!pass_file){
         cerr << "Could not open the password file" << endl;
         exit(EXIT_FAILURE);
@@ -175,15 +194,89 @@ void view_all_password() {
     }
 
     string username_email, website, password;
+    int serial = 1;
     while(pass_file >> username_email >> website >> password){
-        cout << username_email<< " " << website << " " << password << endl; 
+        cout << serial << ". " <<username_email<< " " 
+        << website << " " << password << endl; 
+        serial++;
     }
     cout << endl << endl;
     pass_file.close();
 
 }
 
+void change_password() {
+    view_all_password();
+
+    cout << "Which entry do you want to change?"<<endl;
+    cout << "Type the line number: ";
+    int line_number;
+    cin>> line_number;    
+
+
+
+}
+
+void delete_entry(){
+    view_all_password();
+    cout << "Which entry do you want to delete?"<<endl;
+    cout << "Type the line number: ";
+    int line_number;
+    cin>> line_number;
+
+    ifstream input_file("password.txt", ios::in); 
+
+    if(!input_file){
+        cerr<< "Could not open the password file" <<endl;
+        exit(EXIT_FAILURE);
+    }
+
+    vector<string> lines;
+    string line;
+
+    while(getline(input_file,line)){
+        lines.push_back(line);
+    }
+
+    input_file.close();
+
+    if(line_number>lines.size()){
+        cout << "Line " << line << " not in the file" << endl;
+        cout << "File has " << lines.size() << " lines"<<endl;
+        return; 
+    }
+
+    ofstream output_file("password.txt",ios::out);
+
+    for(int i=0;i<lines.size();i++){
+        if(i != line_number - 1){
+            output_file << lines[i] << endl;
+        }
+    }
+    output_file.close();
+
+    cout << "\nSuccessfully deleted Entry...\n" << endl;
+
+}
+
+
 int main(){
+
+    int attempt_counter = 0;
+    while(!check_masterPass()){
+        if(attempt_counter>=3){
+            clear_display();
+            cout << "You have typed wrong password more than three times\n" << endl;
+            cout << "Please Run the program and try again......" << endl;
+            return -1;
+        }
+
+        cout << "Master Password is wrong. Try again" << endl;
+        attempt_counter++;
+
+    }
+
+    clear_display();
     char option;
     cout << "PASSWORD MANAGER" << endl;
     cout << "----------------" << endl << endl;
@@ -202,6 +295,13 @@ int main(){
             find_password();
         }
         else if(option == '4'){
+            change_password();
+        }
+        else if(option == '5'){
+            delete_entry();
+        }
+
+        else if(option == '6'){
             view_all_password();
         }
         else if(option != 'q'){
