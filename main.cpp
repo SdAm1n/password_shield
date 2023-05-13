@@ -37,6 +37,24 @@ void clear_display()        // for detecting operating system
     #endif
 }
 
+void intro_art(){
+    ifstream intro_file("intro_art.txt",ios::in);
+
+    if(!intro_file) {
+        cout << "PASSWORD MANAGER" << endl;
+        cout << "----------------" << endl;
+        return;
+    }
+
+    string line;
+
+    while(getline(intro_file, line)){
+        cout << line << endl;
+    }
+    intro_file.close();
+
+}
+
 
 // menu function shows menu for password manager
 
@@ -278,8 +296,8 @@ int main(){
 
     clear_display();
     char option;
-    cout << "PASSWORD MANAGER" << endl;
-    cout << "----------------" << endl << endl;
+    
+    intro_art();
     
     do {
         menu();
