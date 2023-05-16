@@ -335,18 +335,18 @@ void delete_entry(){
 int main(){
 
     int attempt_counter = 0;
-    // while(!check_masterPass()){
-    //     if(attempt_counter>=3){
-    //         clear_display();
-    //         cout << "You have typed wrong password more than three times\n" << endl;
-    //         cout << "Please Run the program and try again......" << endl;
-    //         return -1;
-    //     }
+    while(!check_masterPass()){
+        if(attempt_counter>=3){
+            clear_display();
+            cout << "You have typed wrong password more than three times\n" << endl;
+            cout << "Please Run the program and try again......" << endl;
+            return -1;
+        }
 
-    //     cout << "Master Password is wrong. Try again" << endl;
-    //     attempt_counter++;
+        cout << "Master Password is wrong. Try again" << endl;
+        attempt_counter++;
 
-    // }
+    }
 
     clear_display();
     char option;
