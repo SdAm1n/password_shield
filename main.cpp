@@ -8,6 +8,7 @@
 #include <cstdlib>  // exit function prototypes
 #include <ctime>
 #include <fstream>  // contains file stream processing types
+#include "clipboardxx/clipboardxx.hpp"  // copy paste to clipboard external library header
 
 using namespace std;
 
@@ -133,6 +134,10 @@ void generate_password() {
         new_pass+=random_str[rand()%random_str_len];
     }
     cout << new_pass << endl <<endl;
+
+    clipboardxx::clipboard clip;
+
+    clip << new_pass;   // To copy the generated password to clipboard
 
     cout << "Do you want to save the password (Y or N): ";
     char choice;
