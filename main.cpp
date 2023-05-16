@@ -137,7 +137,7 @@ void generate_password() {
     cout << "Do you want to save the password (Y or N): ";
     char choice;
     cin>>choice;
-    if(choice == 'Y'){
+    if(choice == 'Y' || choice == 'y'){
         store_password(new_pass);
     }
 }
@@ -224,18 +224,72 @@ void view_all_password() {
 }
 
 void change_password() {
+
     view_all_password();
 
-    cout << "Which entry do you want to change?"<<endl;
+    cout << "Which password do you want to change?" << endl;
     cout << "Type the line number: ";
+
     int line_number;
-    cin>> line_number;    
+    cin>> line_number;
+    
+    int temp_line = line_number;
+    // Read the file and store the password in a variable
 
+    ifstream input_file("password.txt", ios::in);
 
+    if(!input_file){
+        cerr<< "Could not open the password file" <<endl;
+        exit(EXIT_FAILURE);
+    }
+
+    string username_email, website, password;
+
+    while(input_file >> username_email >> website >> password) {
+        --temp_line;
+        if(temp_line==0) break;
+    }
+    input_file.close();
+
+    ifstream inp_file("password.txt", ios::in);
+
+    vector<string> lines;
+    string line;
+
+    while(getline(inp_file,line)){
+        lines.push_back(line);
+    }
+
+    inp_file.close();
+
+    if(line_number>lines.size()){
+        clear_display();
+        cout << "Line " << line << " not in the file" << endl;
+        cout << "File has " << lines.size() << " lines"<<endl;
+        return; 
+    }
+
+    cout << "Type the new password: ";
+    string new_password;
+    cin>>new_password;
+
+    ofstream output_file("password.txt", ios::out);
+
+    for(int i=0;i<lines.size();i++){
+        int pos = lines[i].find(password);
+        if(pos != string::npos) {
+            lines[i].replace(pos,password.size(),new_password);
+        }
+        output_file << lines[i] << endl;
+        
+    }
+    output_file.close();
+    cout<< "Successfully changed the password" << endl;
 
 }
 
 void delete_entry(){
+
     view_all_password();
     cout << "Which entry do you want to delete?"<<endl;
     cout << "Type the line number: ";
@@ -281,18 +335,18 @@ void delete_entry(){
 int main(){
 
     int attempt_counter = 0;
-    while(!check_masterPass()){
-        if(attempt_counter>=3){
-            clear_display();
-            cout << "You have typed wrong password more than three times\n" << endl;
-            cout << "Please Run the program and try again......" << endl;
-            return -1;
-        }
+    // while(!check_masterPass()){
+    //     if(attempt_counter>=3){
+    //         clear_display();
+    //         cout << "You have typed wrong password more than three times\n" << endl;
+    //         cout << "Please Run the program and try again......" << endl;
+    //         return -1;
+    //     }
 
-        cout << "Master Password is wrong. Try again" << endl;
-        attempt_counter++;
+    //     cout << "Master Password is wrong. Try again" << endl;
+    //     attempt_counter++;
 
-    }
+    // }
 
     clear_display();
     char option;
