@@ -10,8 +10,10 @@
 #include <fstream>  // contains file stream processing types
 #include <cmath>
 #include <numeric>
-#include "clipboardxx/clipboardxx.hpp"  // copy paste to clipboard external library header
 #include <conio.h>
+#include <iomanip>
+#include "clipboardxx/clipboardxx.hpp"  // copy paste to clipboard external library header
+
 
 using namespace std;
 
@@ -187,6 +189,9 @@ void intro_art(){
 
 void menu() {
     
+    cout << "-----------------------" <<endl;
+    cout << "|" << setw(11) << "Menu" << setw(11) << "|" << endl;
+    cout << "-----------------------\n" <<endl;
     cout << "1. Generate Password" << endl;
     cout << "2. Store Password" << endl;
     cout << "3. Find Password"<<endl;
@@ -211,11 +216,13 @@ void store_password(string &default_password) {
         cerr << "Could not open the password file" << endl;
         exit(EXIT_FAILURE);
     }
-    string username_email, website, password;
-    cout << "Enter Username/Email: ";
-    cin >> username_email;
+    string website, username_email, password;
+   
     cout << "Enter Website: ";
     cin >> website;
+     
+    cout << "Enter Username/Email: ";
+    cin >> username_email;
 
     if(!default_password.empty()) {
         password = default_password;
@@ -228,7 +235,7 @@ void store_password(string &default_password) {
 
     string encrypted_password = encrypt_password(password);  // calling encryp_password fundtion that converts password to encrypted password string
 
-    pass_file << username_email << " " << website << " "<< encrypted_password << endl;
+    pass_file << website << " " << username_email << " "<< encrypted_password << endl;
 
     pass_file.close();
 
@@ -309,7 +316,7 @@ void find_password() {
     }
 
     bool password_found = false;
-    while(pass_file >> username_email >> website >> encrypted_password){
+    while(pass_file >> website >> username_email >> encrypted_password){
         
 
         if(choice == '1' && find_by == username_email) {
@@ -337,8 +344,9 @@ void find_password() {
 
 void view_all_password() {
     clear_display();
-    cout << "All Passwords" <<endl;
-    cout << "-------------\n" << endl;
+    cout << "------------------------------------------- ";
+    cout << "PASSWORD LIST";
+    cout<< " -------------------------------------------\n"<<endl;
     ifstream pass_file("password.txt", ios::in);
 
     if(!pass_file){
@@ -348,12 +356,16 @@ void view_all_password() {
 
     string username_email, website, encrypted_password;
     int serial = 1;
-    while(pass_file >> username_email >> website >> encrypted_password){
+
+    cout <<left << setw(25) <<"Serial" <<setw(25) << "Website" <<setw(25) <<
+     "Username" << setw(25) << "Password" << endl; 
+
+    while(pass_file >> website >> username_email >> encrypted_password){
 
         vector<unsigned> tovec = decrypt_password(encrypted_password);  // converts encrypted password to unsigned vector
 
-        cout << serial << ". " <<username_email<< " " 
-        << website << " " << decoder(tovec) << endl; 
+        cout <<left << setw(25) << serial <<setw(25) << website
+        << setw(25) << username_email << setw(25) << decoder(tovec) << endl; 
         serial++;
     }
     cout << endl << endl;
@@ -383,7 +395,7 @@ void change_password() {
 
     string username_email, website, encrypted_password;
 
-    while(input_file >> username_email >> website >> encrypted_password) {
+    while(input_file >> website >> username_email >> encrypted_password) {
         --temp_line;
         if(temp_line==0) break;
     }
