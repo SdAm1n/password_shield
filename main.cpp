@@ -8,16 +8,142 @@
 #include <cstdlib>  // exit function prototypes
 #include <ctime>
 #include <fstream>  // contains file stream processing types
+#include <cmath>
+#include <numeric>
 #include "clipboardxx/clipboardxx.hpp"  // copy paste to clipboard external library header
+#include <conio.h>
 
 using namespace std;
+
+// RSA Algorithm Start
+unsigned PUBLIC_KEY;
+unsigned PRIVATE_KEY;
+unsigned N;
+void keyGeneration(){
+
+    unsigned p = 97;     // first prime number
+    unsigned q = 101;     // second prime number
+    N = p * q;     // n = p*q
+    unsigned phi_n = (p-1) * (q-1); // phi_n = (p-1) * (q-1)
+    unsigned e;     // 1 < e < phi_n; e should be coprime with phi_n
+    unsigned d;     // (e*d) mod phi_n = 1
+
+
+    // public key generation
+    unsigned i = 2;
+    while(gcd(i,phi_n) !=1) {
+        i++;
+    }
+    e = i;
+
+    PUBLIC_KEY = e;
+
+
+    // private key generation
+    unsigned k = 1;
+ 
+    while(((k*phi_n)+1) % e != 0) {
+        k++;
+    }
+        
+    d = ((k*phi_n)+1)/e;
+
+    PRIVATE_KEY = d;
+
+}
+
+unsigned long long int encrypt(unsigned message){
+    unsigned e = PUBLIC_KEY;
+    unsigned long long int encrypted_text = 1;
+    while(e--){
+        encrypted_text *= message;
+        encrypted_text  %= N;
+    }
+    return encrypted_text;
+}
+
+unsigned long long int decrypt(unsigned encrpyted_text)
+{
+    unsigned d = PRIVATE_KEY;
+
+    unsigned long long int decrypted = 1;
+    while (d--) {
+        decrypted *= encrpyted_text;
+        decrypted %= N;
+    }
+
+    return decrypted;
+}
+
+
+vector<unsigned>encoder(string message){
+    vector<unsigned> form;
+
+    for(auto &letter: message){
+        form.push_back(encrypt((unsigned)letter));
+    }
+
+    return form;
+}
+
+
+string decoder(vector<unsigned> encoded){
+    string s="";
+    
+    for (auto &num: encoded){
+        s+=decrypt(num);
+    }
+    return s;
+}
+
+// RSA Algo Ends
+
+
+string encrypt_password(string password){
+    vector<unsigned> encrypted_password = encoder(password);    // encrypting the password
+
+    string encrypted="";
+    for(auto &p: encrypted_password){
+        encrypted += to_string(p);
+        encrypted += ':';
+    }
+    return encrypted;
+}
+
+
+vector <unsigned> decrypt_password(string encrypted_password){
+
+    // converting encrypted password string to unsigned vector for decryption 
+
+    vector<unsigned> tovec;
+    for(int i=0;i<encrypted_password.length();i++){
+
+        string ns;
+        while(encrypted_password[i] != ':') {
+            ns += encrypted_password[i];
+            i++;
+        }
+        tovec.push_back((unsigned)stoi(ns));
+    }
+    return tovec;
+
+}
+
 
 const string MASTER_PASSWORD = "1234";
 
 bool check_masterPass(){
     cout << "Type your Master Password to Access the program: ";
     string master_password;
-    cin>> master_password;
+
+    // password masking
+    char c;
+    for(int i=0;i<1000;i++){
+        c = getch();
+        if(c == '\r') break;
+        cout << "*";
+        master_password += c;
+    }
 
     if(master_password == MASTER_PASSWORD) {
         return true;
@@ -100,10 +226,10 @@ void store_password(string &default_password) {
     }
     cout << endl;
 
-   
-    
+    string encrypted_password = encrypt_password(password);  // calling encryp_password fundtion that converts password to encrypted password string
 
-    pass_file << username_email << " " << website << " "<< password << endl;
+    pass_file << username_email << " " << website << " "<< encrypted_password << endl;
+
     pass_file.close();
 
     cout << "Password is stored\n" << endl;
@@ -135,7 +261,7 @@ void generate_password() {
     }
     cout << new_pass << endl <<endl;
 
-    clipboardxx::clipboard clip;
+    clipboardxx::clipboard clip;    // creating clipboard object from external library clipboardxx
 
     clip << new_pass;   // To copy the generated password to clipboard
 
@@ -166,7 +292,7 @@ void find_password() {
     char choice;
     cin>> choice;
 
-    string username_email, website, password,find_by;
+    string username_email, website, encrypted_password,find_by;
     if(choice == '1'){
             cout << "Type Username/Email: ";
             cin>> find_by;
@@ -183,16 +309,19 @@ void find_password() {
     }
 
     bool password_found = false;
-    while(pass_file >> username_email >> website >> password){
+    while(pass_file >> username_email >> website >> encrypted_password){
         
+
         if(choice == '1' && find_by == username_email) {
+            vector<unsigned> tovec = decrypt_password(encrypted_password);  // to decrypt the password
             cout << "For website: "<< website;
-            cout << " The password is: "<< password << endl;
+            cout << " The password is: "<< decoder(tovec) << endl;
             password_found = true;
         }
         else if(choice == '2' && find_by == website ) {
+            vector<unsigned> tovec = decrypt_password(encrypted_password);  // to decrypt the password
             cout << "For Username/Email: "<< username_email;
-            cout << " The password is: "<< password << endl;
+            cout << " The password is: "<< decoder(tovec) << endl;
             password_found = true;
         }
     }
@@ -202,6 +331,7 @@ void find_password() {
     cout << endl;
 
 }
+
 
 // view_all_password functions prints all password from password.txt file
 
@@ -216,11 +346,14 @@ void view_all_password() {
         exit(EXIT_FAILURE);
     }
 
-    string username_email, website, password;
+    string username_email, website, encrypted_password;
     int serial = 1;
-    while(pass_file >> username_email >> website >> password){
+    while(pass_file >> username_email >> website >> encrypted_password){
+
+        vector<unsigned> tovec = decrypt_password(encrypted_password);  // converts encrypted password to unsigned vector
+
         cout << serial << ". " <<username_email<< " " 
-        << website << " " << password << endl; 
+        << website << " " << decoder(tovec) << endl; 
         serial++;
     }
     cout << endl << endl;
@@ -248,9 +381,9 @@ void change_password() {
         exit(EXIT_FAILURE);
     }
 
-    string username_email, website, password;
+    string username_email, website, encrypted_password;
 
-    while(input_file >> username_email >> website >> password) {
+    while(input_file >> username_email >> website >> encrypted_password) {
         --temp_line;
         if(temp_line==0) break;
     }
@@ -281,9 +414,9 @@ void change_password() {
     ofstream output_file("password.txt", ios::out);
 
     for(int i=0;i<lines.size();i++){
-        int pos = lines[i].find(password);
+        int pos = lines[i].find(encrypted_password);
         if(pos != string::npos) {
-            lines[i].replace(pos,password.size(),new_password);
+            lines[i].replace(pos,encrypted_password.size(),encrypt_password(new_password));
         }
         output_file << lines[i] << endl;
         
@@ -357,6 +490,8 @@ int main(){
     char option;
     
     intro_art();
+
+    keyGeneration();    // Key generation for RSA Algorithm
     
     do {
         menu();
@@ -389,4 +524,4 @@ int main(){
         }
     }while(option != 'q');
 
-}
+}   
