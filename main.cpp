@@ -8,7 +8,6 @@
 #include <cstdlib>  // exit function prototypes
 #include <ctime>
 #include <fstream>  // contains file stream processing types
-#include <cmath>
 #include <numeric>
 #include <conio.h>
 #include <iomanip>
@@ -132,21 +131,36 @@ vector <unsigned> decrypt_password(string encrypted_password){
 }
 
 
-const string MASTER_PASSWORD = "1234";
+const string MASTER_PASSWORD = "1234";      // Default MASTER_PASSWORD
+
+
+/*
+    * check_masterPass() return a boolean value
+    * this function check MASTER_PASSWORD which is already set in the program
+    * with the user typed password (master_password) and returns value with that accord
+    * this function also uses password masking. so when you type a password * is shown in the console
+    * instead of the typed password
+    * password masking is achieved by using conio.h header file
+    * this can also be achieved by using win32 api or ncruses library or writing the getch() manually
+*/
 
 bool check_masterPass(){
+
+    // asking user to type master password
     cout << "Type your Master Password to Access the program: ";
     string master_password;
 
-    // password masking
+    // password masking starts
     char c;
     for(int i=0;i<1000;i++){
-        c = getch();
+        c = getch();            // getch() belongs to header conio.h
         if(c == '\r') break;
         cout << "*";
         master_password += c;
     }
+    // password masking ends
 
+    // comparing user typed password with hardcoded password
     if(master_password == MASTER_PASSWORD) {
         return true;
     }
@@ -154,7 +168,13 @@ bool check_masterPass(){
     return false;
 }
 
-void clear_display()        // for detecting operating system
+/*
+    * clear_display() is a function that clears the terminal/console by sending
+    * appropiate system command for respective operating system
+    * it can detect Windows, Linux and Mac operating system
+*/
+
+void clear_display()
 {
     #ifdef _WIN32           // for detecting windows 32 or 64 bit system
         system("cls");
@@ -166,8 +186,13 @@ void clear_display()        // for detecting operating system
     #endif
 }
 
+/*
+    * intro_art() reads from intro_art.txt which contains ascii art
+    * output the contents line by line in terminal / console
+*/
+
 void intro_art(){
-    ifstream intro_file("intro_art.txt",ios::in);
+    ifstream intro_file("intro_art.txt", ios::in);
 
     if(!intro_file) {
         cout << "PASSWORD MANAGER" << endl;
@@ -184,12 +209,11 @@ void intro_art(){
 
 }
 
-
 // menu function shows menu for password manager
 
 void menu() {
     
-    cout << "-----------------------" <<endl;
+    cout << internal << "-----------------------" <<endl;
     cout << "|" << setw(11) << "Menu" << setw(11) << "|" << endl;
     cout << "-----------------------\n" <<endl;
     cout << "1. Generate Password" << endl;
@@ -203,19 +227,22 @@ void menu() {
     cout << "Enter Your Choice: "; 
 }
 
-
-// store_password function stores password in password.txt file
+/*
+    * store_password() stores password in password.txt
+    * it stores encrypted_password that is encrypted using RSA Algorithm
+*/
 
 void store_password(string &default_password) {
     clear_display();
 
-    ofstream pass_file("password.txt",ios::app);
+    ofstream pass_file("password.txt", ios::app);
 
-    
+    // checks if file exists
     if(!pass_file){
         cerr << "Could not open the password file" << endl;
         exit(EXIT_FAILURE);
     }
+
     string website, username_email, password;
    
     cout << "Enter Website: ";
@@ -231,8 +258,11 @@ void store_password(string &default_password) {
         cout << "Enter Password: ";
         cin>> password;
     }
+
     cout << endl;
 
+
+    // encrypting the password into encrypted_password
     string encrypted_password = encrypt_password(password);  // calling encryp_password fundtion that converts password to encrypted password string
 
     pass_file << website << " " << username_email << " "<< encrypted_password << endl;
@@ -243,8 +273,14 @@ void store_password(string &default_password) {
 
 }
 
-// generate_password function is a pseudo random password generator 
-// which generates a random password 
+
+/*
+    * generate_password() generates a pseudo random password
+    * generated password can be saved in the file
+    * generated password automatically is saved to clipboard by using clipboardxx library
+*/
+
+
 
 void generate_password() {
     clear_display();
@@ -256,22 +292,27 @@ void generate_password() {
 
     srand(time(NULL));
     int random_str_len = random_str.size();
+
+    // asks user for password size (how long the password will be) 
     cout << "Enter password size in integers: ";
     int password_length;
     cin >> password_length;
     cout << "\nGenerating Password.......\n" <<endl;
 
+
+    // Generating password
     string new_pass;
     while(password_length--){
-        // cout << random_str[rand()%random_str_len];
         new_pass+=random_str[rand()%random_str_len];
     }
     cout << new_pass << endl <<endl;
 
+    // copy to clipboard
     clipboardxx::clipboard clip;    // creating clipboard object from external library clipboardxx
 
     clip << new_pass;   // To copy the generated password to clipboard
 
+    // asks the user to save the password in password.txt file
     cout << "Do you want to save the password (Y or N): ";
     char choice;
     cin>>choice;
@@ -280,22 +321,27 @@ void generate_password() {
     }
 }
 
-// find_password function finds password by username/email or website
+/*
+    * find_password() finds the password by using website or username/email
+    * this function reads from password.txt, decrypts the password and output it to terminal/console
+*/
 
 void find_password() {
 
     clear_display();
     ifstream pass_file("password.txt", ios::in);
 
+    // checks if file exists
     if(!pass_file){
         cerr<< "Could not open the password file" <<endl;
         exit(EXIT_FAILURE);
     }
 
+    // asks user by which method want to find the password
     cout << "\nFind password by: " << endl;
     cout << "1. Username/Email" << endl;
     cout << "2. Website" << endl;
-    cout << "Enter Your Choice: ";
+    cout << "Enter Your Choice (1 or 2) : ";
     char choice;
     cin>> choice;
 
@@ -304,11 +350,12 @@ void find_password() {
             cout << "Type Username/Email: ";
             cin>> find_by;
     }
+
     else if(choice == '2') {
             cout << "Type Website: ";
-            cin>> find_by;
-            
+            cin>> find_by; 
     }
+
     else {
             cout << "Invalid choice....." << endl;
             cout << "Please type 1 or 2" << endl;
@@ -339,16 +386,19 @@ void find_password() {
 
 }
 
+/*
+    * password_list() prints all the password to the terminal/console
+    * reads the password.txt file and decrypts the password before printing it
+*/
 
-// view_all_password functions prints all password from password.txt file
-
-void view_all_password() {
+void password_list() {
     clear_display();
     cout << "------------------------------------------- ";
     cout << "PASSWORD LIST";
     cout<< " -------------------------------------------\n"<<endl;
     ifstream pass_file("password.txt", ios::in);
 
+    // checks if file exits
     if(!pass_file){
         cerr<< "Could not open the password file" <<endl;
         exit(EXIT_FAILURE);
@@ -368,15 +418,22 @@ void view_all_password() {
         << setw(25) << username_email << setw(25) << decoder(tovec) << endl; 
         serial++;
     }
+
     cout << endl << endl;
     pass_file.close();
 
 }
 
+/*
+    * change_password() changes a particular password from password.txt
+    * this function replaces the encrypted password by new encrypted password
+*/
+
 void change_password() {
 
-    view_all_password();
-
+    password_list();
+    
+    // asks the user for the line number the password to be changed
     cout << "Which password do you want to change?" << endl;
     cout << "Type the line number: ";
 
@@ -419,15 +476,18 @@ void change_password() {
         return; 
     }
 
+    // asks the user for new password
     cout << "Type the new password: ";
     string new_password;
     cin>>new_password;
 
+    // opens the file in output mode inorder to rewrite it
     ofstream output_file("password.txt", ios::out);
 
     for(int i=0;i<lines.size();i++){
-        int pos = lines[i].find(encrypted_password);
-        if(pos != string::npos) {
+        int pos = lines[i].find(encrypted_password);    // finds the index of the old encrypted password
+        if(pos != string::npos && line_number -1 == i) {
+            // replaces the old encrypted password with new encryptes password
             lines[i].replace(pos,encrypted_password.size(),encrypt_password(new_password));
         }
         output_file << lines[i] << endl;
@@ -438,9 +498,19 @@ void change_password() {
 
 }
 
+/*
+    * delete_entry() deletes a whole line from the password.txt file
+    * it reads from the password.txt file
+    * saves all the lines to a vector
+    * then it rewrites to password.txt file except the line to be deleted
+*/
+
+
 void delete_entry(){
 
-    view_all_password();
+    password_list();
+
+    // asks the user which line to delete
     cout << "Which entry do you want to delete?"<<endl;
     cout << "Type the line number: ";
     int line_number;
@@ -456,12 +526,13 @@ void delete_entry(){
     vector<string> lines;
     string line;
 
-    while(getline(input_file,line)){
+    while(getline(input_file, line)){
         lines.push_back(line);
     }
 
     input_file.close();
 
+    // check if invalid line number is provided
     if(line_number>lines.size()){
         cout << "Line " << line << " not in the file" << endl;
         cout << "File has " << lines.size() << " lines"<<endl;
@@ -481,6 +552,7 @@ void delete_entry(){
 
 }
 
+// main function start
 
 int main(){
 
@@ -526,7 +598,7 @@ int main(){
         }
 
         else if(option == '6'){
-            view_all_password();
+            password_list();
         }
         else if(option != 'q'){
             cout << "Wrong Option\nTry Entering 1, 2 or q :)\n" << endl;
