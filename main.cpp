@@ -221,7 +221,7 @@ void menu() {
     cout << "3. Find Password"<<endl;
     cout << "4. Change Password" << endl;
     cout << "5. Delete an Entry" << endl;
-    cout << "6. View All Passwords" << endl;
+    cout << "6. View Saved Passwords" << endl;
     cout << "q. Quit"<<endl;
     cout << endl;
     cout << "Enter Your Choice: "; 
