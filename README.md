@@ -22,7 +22,7 @@ First asks for the master password which is `1234`
 Requirements:
 
 C++ compiler (`C++17` or above is needed to compile the program) needs to be installed in your pc.
-gcd() function is used inside this code that is only available from C++17.
+gcd() function is used inside this code that is only available from C++17. To Download the latest compiler SEE [MSYS2](https://www.msys2.org/) or [For VS Code Users](https://code.visualstudio.com/docs/cpp/config-mingw).
 
 ## [ClipboardXX](https://github.com/Arian8j2/ClipboardXX)
 
