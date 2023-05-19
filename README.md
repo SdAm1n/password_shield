@@ -1,6 +1,6 @@
-# password manager (name undecided)
+# Password Shield
 
- A `Password Manager` written in C++. This program uses file (password.txt) to store Website name, Username/Email and Password. `RSA Algorithm` is implemented inside this program. Password `Encryption` and `Decryption` is done by `RSA Algorithm`.
+ Password Shield is a `Password Manager` written in C++. This program uses file (password.txt) to store Website name, Username/Email and Password. `RSA Algorithm` is implemented inside this program. Password `Encryption` and `Decryption` is done by `RSA Algorithm`. [RSA algorithm](https://www.geeksforgeeks.org/rsa-algorithm-cryptography/) is an asymmetric cryptography algorithm.
 
 This program can do the following things:
 
