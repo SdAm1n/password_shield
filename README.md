@@ -17,6 +17,8 @@ First asks for the master password which is `1234`
 
 `q` Quits the program.
 
+![Password Shield](https://github.com/SdAm1n/password_shield/blob/146386042e2a06edab7b7b37789d36e885febd9b/password_shield.png)
+
 Requirements:
 
 C++ compiler (`C++17` or above is needed to compile the program) needs to be installed in your pc.
