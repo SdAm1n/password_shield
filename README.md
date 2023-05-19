@@ -24,6 +24,8 @@ Requirements:
 C++ compiler (`C++17` or above is needed to compile the program) needs to be installed in your pc.
 gcd() function is used inside this code that is only available from C++17. To Download the latest compiler SEE [MSYS2](https://www.msys2.org/) or [For VS Code Users](https://code.visualstudio.com/docs/cpp/config-mingw).
 
+You can also run it using [Codeblocks](http://www.codeblocks.org/downloads/). Change your compiler in codeblocks to C++ 17 or above (settings > compiler).
+
 ## [ClipboardXX](https://github.com/Arian8j2/ClipboardXX)
 
 This program uses this external library to copy paste generated password automatically to clipboard. This library only works on Windows and Linux (X11 only).
