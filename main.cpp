@@ -144,7 +144,7 @@ string encrypt_password(string password){
 /*
     * decrypt_password() decrypts the password into original password from encrypted string and returns it
     * the original password is returned as an unsigned vector
-    * the vector is latter converted into string to print in the terminal/console
+    * the vector is later converted into string to print in the terminal/console
 */
 
 
@@ -186,15 +186,34 @@ bool check_masterPass(){
     cout << "Type your Master Password to Access the program: ";
     string master_password;
 
-    // password masking starts
-    char c;
-    for(int i=0;i<1000;i++){
-        c = getch();            // getch() belongs to header conio.h
-        if(c == '\r') break;
-        cout << "*";
-        master_password += c;
+    const char BACKSPACE = 8;   //ASCII code for BACKSPACE Key
+    const char ENTER = 13;      //ASCII code for ENTER Key
+
+    char c;                     //initialize character 
+
+
+    // password masking begin
+    while ((c = getch()) != ENTER)                  // keep taking character unless enter is pressed
+    {
+        if (c == BACKSPACE)                         // if backspace is pressed
+        {
+            if (master_password.length() != 0)      // checks if characters are already typed or not
+            {
+                cout << "\b \b";                    // first moves the cursor back one place and then writes a space to erase the character
+                master_password.resize(master_password.length() - 1); //resize the length of master_password 
+            }
+        }
+        
+        else
+        {
+            master_password.push_back(c);           // push back to string master_password for later comparison
+            cout << '*';                            // print * instead of the typed character
+        }
     }
-    // password masking ends
+    cout << endl;
+    // password masking end
+
+
 
     // comparing user typed password with hardcoded password
     if(master_password == MASTER_PASSWORD) {
