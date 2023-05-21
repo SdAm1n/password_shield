@@ -662,7 +662,7 @@ int main(){
             password_list();
         }
         else if(option != 'q'){
-            cout << "Wrong Option\nTry Entering 1, 2 or q :)\n" << endl;
+            cout << "Wrong Option\nTry Entering 1 to 6 or q :)\n" << endl;
         }
         else {
             cout << "Quiting..." <<endl;
