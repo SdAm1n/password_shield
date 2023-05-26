@@ -330,7 +330,7 @@ void store_password(string &default_password) {
 
     pass_file.close();
 
-    cout << "Password is stored\n" << endl;
+    cout << "Password is stored...\n" << endl;
 
 }
 
