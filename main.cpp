@@ -301,6 +301,9 @@ void store_password(string &default_password) {
         exit(EXIT_FAILURE);
     }
 
+    cout << "Enter the following informations to store password" << endl;
+    cout << "----------------------------------------------------\n"<< endl;
+
     string website, username_email, password;
    
     cout << "Enter Website: ";
@@ -352,7 +355,7 @@ void generate_password() {
     int random_str_len = random_str.size();
 
     // asks user for password size (how long the password will be) 
-    cout << "Enter password size in integers: ";
+    cout << "Enter Password Length (In Integer): ";
     int password_length;
     cin >> password_length;
     cout << "\nGenerating Password.......\n" <<endl;
@@ -377,6 +380,7 @@ void generate_password() {
     if(choice == 'Y' || choice == 'y'){
         store_password(new_pass);
     }
+    cout << endl;
 }
 
 /*
@@ -396,21 +400,24 @@ void find_password() {
     }
 
     // asks user by which method want to find the password
-    cout << "\nFind password by: " << endl;
+    cout <<"Choose A Method To Find Password" <<endl;
+    cout << "--------------------------------\n" <<endl;
+
+    cout << "\nFind Password by:\n" << endl;
     cout << "1. Username/Email" << endl;
     cout << "2. Website" << endl;
-    cout << "Enter Your Choice (1 or 2) : ";
+    cout << "\nEnter Your Choice (1 or 2) : ";
     char choice;
     cin>> choice;
 
     string username_email, website, encrypted_password,find_by;
     if(choice == '1'){
-            cout << "Type Username/Email: ";
+            cout << "\nType Username/Email: ";
             cin>> find_by;
     }
 
     else if(choice == '2') {
-            cout << "Type Website: ";
+            cout << "\nType Website: ";
             cin>> find_by; 
     }
 
@@ -419,21 +426,21 @@ void find_password() {
             cout << "Please type 1 or 2" << endl;
             find_password();
     }
-
+    cout << endl;
     bool password_found = false;
     while(pass_file >> website >> username_email >> encrypted_password){
         
 
         if(choice == '1' && find_by == username_email) {
             vector<unsigned> tovec = decrypt_password(encrypted_password);  // to decrypt the password
-            cout << "For website: "<< website;
-            cout << " The password is: "<< decoder(tovec) << endl;
+            cout << "For Website: " << website << "  |  ";
+            cout << "Password: "<< decoder(tovec) << endl;
             password_found = true;
         }
         else if(choice == '2' && find_by == website ) {
             vector<unsigned> tovec = decrypt_password(encrypted_password);  // to decrypt the password
-            cout << "For Username/Email: "<< username_email;
-            cout << " The password is: "<< decoder(tovec) << endl;
+            cout << "For Username/Email: "<< username_email << "  |  ";
+            cout << "Password: "<< decoder(tovec) << endl;
             password_found = true;
         }
     }
@@ -552,7 +559,12 @@ void change_password() {
         
     }
     output_file.close();
-    cout<< "Successfully changed the password\n" << endl;
+
+    clear_display();
+    password_list();
+
+    cout<< "\nSuccessfully changed the password in Line "<< line_number << " to: " << new_password   
+        <<" ...\n" << endl;
 
 }
 
@@ -606,7 +618,10 @@ void delete_entry(){
     }
     output_file.close();
 
-    cout << "\nSuccessfully deleted Entry...\n" << endl;
+    clear_display();
+    password_list();
+
+    cout << "\nSuccessfully Deleted The Entry...\n" << endl;
 
 }
 
@@ -665,7 +680,7 @@ int main(){
             cout << "Wrong Option\nTry Entering 1 to 6 or q :)\n" << endl;
         }
         else {
-            cout << "Quiting..." <<endl;
+            cout << "\nQuiting...\n" <<endl;
         }
     }while(option != 'q');  // option for closing the program
 
