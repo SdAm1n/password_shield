@@ -226,7 +226,7 @@ bool check_masterPass(){
 /*
     * clear_display() is a function that clears the terminal/console by sending
     * appropiate system command for respective operating system
-    * it can detect Windows, Linux and Mac operating system
+    * it can detect Windows and Linux operating system
 */
 
 void clear_display()
@@ -234,8 +234,6 @@ void clear_display()
     #ifdef _WIN32           // for detecting windows 32 or 64 bit system
         system("cls");
     #elif __linux__         // for detecting linux
-        system("clear");
-    #elif __MACH__          // for detecting mac
         system("clear");
 
     #endif
