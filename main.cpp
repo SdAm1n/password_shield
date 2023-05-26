@@ -552,7 +552,7 @@ void change_password() {
         
     }
     output_file.close();
-    cout<< "Successfully changed the password" << endl;
+    cout<< "Successfully changed the password\n" << endl;
 
 }
 
