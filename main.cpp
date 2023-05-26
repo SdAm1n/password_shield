@@ -177,7 +177,7 @@ const string MASTER_PASSWORD = "1234";      // Default MASTER_PASSWORD
     * this function also uses password masking. so when you type a password * is shown in the console
     * instead of the typed password
     * password masking is achieved by using conio.h header file
-    * this can also be achieved by using win32 api or ncruses library or writing the getch() manually
+    * this can also be achieved by using win32 api or ncurses library or writing the getch() manually
 */
 
 bool check_masterPass(){
